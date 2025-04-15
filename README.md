@@ -1,20 +1,12 @@
 # Emacs Lisp Elements
 
-A book that provides big picture view of the Emacs Lisp programming
-language by combining prose with code. The goal is to give readers an
-idea of how Elisp works by showing some of the main concepts or
-patterns discernible in everyday code.
+散文とコードを組み合わせることで、Emacs Lisp プログラミング言語の全体像を提示する書籍。 日常的なコードに見られる主な概念やパターンをいくつか示すことで、Elisp の仕組みを読者に理解してもらうことを目的としています。
 
-Some chapters are beginner-friendly, while others dive into deeper
-waters. Though I think everything is still approachable, as I try to
-explain basic concepts and take things one step at a time.
+いくつかの章は初心者向けですが、より深い内容に踏み込んだ章もあります。 基本的な概念を説明し、一歩ずつ進むようにしているので、すべての内容が理解できると思います。
 
-The book is not meant to be a replacement for the built-in Emacs Lisp
-Reference Manual. It simply gives you enough information to reason
-about Elisp. Once you start extending Emacs, the rest will follow
-naturally.
+この本は、Emacsに組み込まれているEmacs Lispリファレンスマニュアルの代わりになるものではありません。この本は、Elispについて論理的に考えるのに十分な情報を提供するものです。Emacsの拡張を始めれば、あとは自然に理解が進むでしょう。
 
-I hope you enjoy it and continue to have fun with Emacs.
+この本を楽しんでいただき、Emacsをこれからも楽しんでいただければ幸いです。
 
 + Official page: <https://protesilaos.com/emacs/emacs-lisp-elements>
 + Git repository: <https://github.com/protesilaos/emacs-lisp-elements>
