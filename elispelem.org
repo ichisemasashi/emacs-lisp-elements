@@ -1,7 +1,7 @@
 #+title: Emacs Lisp Elements
 #+author: Protesilaos Stavrou
 #+email: info@protesilaos.com
-#+language: en
+#+language: jp
 #+options: ':t toc:nil author:t email:t num:t
 #+startup: content
 #+macro: stable-version 1.0.0
@@ -18,56 +18,56 @@
 
 #+texinfo: @insertcopying
 
-This book, written by Protesilaos Stavrou, also known as "Prot", provides a big picture view of the Emacs Lisp programming language.
+プロテシラオス・スタブロス（通称「プロット」）著の本書は、Emacs Lispプログラミング言語の全体像を提示しています。
 
-The information furnished herein corresponds to stable version {{{stable-version}}}, released on {{{release-date}}}.
+本書に記載されている情報は、{{{release-date}}日にリリースされた安定バージョン{{{stable-version}}}}に対応しています。
 
 + Official page: <https://protesilaos.com/emacs/emacs-lisp-elements>
 + Git repository: <https://github.com/protesilaos/emacs-lisp-elements>
 
 #+toc: headlines 8 insert TOC here, with eight headline levels
 
-* Getting started with Emacs Lisp
+* Emacs Lisp入門
 :PROPERTIES:
 :CUSTOM_ID: h:getting-started-with-emacs-lisp
 :END:
 
-The purpose of this book is to provide you with a big picture view of Emacs Lisp, also known as "Elisp". This is the programming language you use to extend Emacs. Emacs is a programmable text editor: it interprets Emacs Lisp and behaves accordingly. You can use Emacs without ever writing a single line of code: it already has lots of features. Though you can, at any time, program it to do exactly what you want by evaluating some Elisp that either you wrote yourself or got from another person, such as in the form of a package.
+本書の目的は、Emacs Lisp（「Elisp」とも呼ばれる）の全体像を把握していただくことです。Emacs Lispは、Emacsを拡張するために使用するプログラミング言語です。Emacsはプログラム可能なテキストエディタであり、Emacs Lispを解釈し、それに応じて動作します。Emacs はコードを一行も書かずに使用することもできます。すでに多くの機能が備わっているからです。しかし、ご自身で作成した Elisp を評価したり、パッケージなどの形で他の人から入手したりすることで、いつでも思い通りに動作するようにプログラムすることができます。
 
-Programming your own text editor is both useful and fun. You can, for example, streamline a sequence of actions you keep doing by combining them in a single command that you then assign to a key binding: type the key and---bam!---perform all the intermediate tasks in one go. This makes you more efficient while it turns the editor into a comfortable working environment.
+独自のテキストエディタをプログラミングすることは、便利であると同時に楽しいものです。例えば、よく行う一連の操作をひとつのコマンドにまとめ、キーバインドを割り当てることができます。キーを押すと、一連の作業がすべて一挙に行われます。これにより作業効率が向上し、エディタが快適な作業環境に変わります。
 
-The fun part is how you go about writing the code. There are no duties you have to conform with. None! You program for the sake of programming. It is a recreational activity that expands your horizons. Plus, you cultivate your Elisp skills, which can prove helpful in the future, should you choose to modify some behaviour of Emacs.
+楽しいのは、コードを書く方法です。従わなければならない義務はありません。まったくありません！ プログラミングはプログラミングのために行います。これは、視野を広げる娯楽的な活動です。さらに、Emacsの動作を変更したいと思ったときに役立つElispのスキルを習得できます。
 
-Tinkering with Emacs is part of the experience. It teaches you to be unapologetically opinionated about how your editor works. The key is to know enough Elisp so that you do not spend too much time having fun or getting frustrated because something trivial does not work. I am writing this as a tinkerer myself with no background in computer science or neighbouring studies: I learnt Emacs Lisp through trial and error by playing around with the editor. My nominal goal was to improve certain micro-motions I was repeating over and over: I sought efficiency only to discover something much more profound. Learning to extend my editor has been a fulfilling experience and I am more productive as a result. Emacs does what I want it to do and I am happy with it.
+Emacsをいじくり回すことは、その経験の一部です。Emacsの動作について、堂々と自分の意見を主張できるようになります。重要なのは、些細なことがうまくいかないために時間を無駄に費やしたり、いらだたしくなったりしないように、十分なElispの知識を身につけることです。私は、コンピュータサイエンスやその関連分野の知識を持たない、ただのいじくり回しとしてこれを書いています。Emacs Lispは、エディタをあれこれいじくり回しながら試行錯誤して学びました。当初の目標は、何度も繰り返していた特定の細かい動作を改善することでした。しかし、効率性を追求した結果、もっと深い何かを発見することができました。エディタの拡張方法を学んだことは、充実した経験であり、その結果、生産性も向上しました。Emacsは私が望むことをすべてこなしてくれるので、とても満足しています。
 
-Each chapter herein is generally short and to-the-point. Some are more friendly to beginners while others dive deeper into advanced topics. There are links between the chapters, exactly how a reference manual is supposed to be done. You may then go back and forth to find what you need.
+本書の各章は概して短く、要点を突いています。初心者向けのものもあれば、より高度なトピックに踏み込んだものもあります。各章の間にはリンクが張られており、まさにリファレンスマニュアルとしてあるべき姿です。必要なものを見つけるために、前後に移動してもよいでしょう。
 
-The text you will find here is a combination of prose and code. The latter may be actual Elisp or pseudo-code which captures the underlying pattern. I encourage you to read this book either inside of Emacs or with Emacs readily available. This way, you can play around with the functions I give you, to further appreciate their nuances.
+ここで紹介するテキストは、散文とコードの組み合わせです。後者は、実際のElispまたはその基礎となるパターンを捉えた疑似コードである場合があります。Emacs内で、またはEmacsをすぐに利用できる状態で、この本を読んでみることをお勧めします。そうすれば、私が紹介する関数を使って実際に試してみることができ、そのニュアンスをより深く理解することができます。
 
-The "big picture view" approach I am adopting is about covering the concepts that I encounter frequently while working with Emacs Lisp. This book is no substitute for the Emacs Lisp Reference Manual and should by no means be treated as the source of truth for any of the Elisp forms I comment on.
+私が採用している「全体像を把握する」アプローチは、Emacs Lispでの作業中に頻繁に遭遇する概念をカバーすることです。この本はEmacs Lispリファレンスマニュアルの代わりになるものではなく、私が解説するElisp形式の真実のソースとして扱われるべきではありません。
 
-Good luck and enjoy!
+頑張って、楽しんでください！
 
-* Evaluate Emacs Lisp
+* Emacs Lispを評価する
 :PROPERTIES:
 :CUSTOM_ID: h:evaluate-emacs-lisp
 :END:
 
-Everything you do in Emacs calls some function. It evaluates Emacs Lisp code, reading the return values and producing side effects ([[#h:side-effect-and-return-value][Side effect and return value]]).
+Emacsで行うすべての操作は、何らかの関数を呼び出します。Emacs Lispコードを評価し、戻り値を読み取り、副作用を生成します。 ([[#h:side-effect-and-return-value][Side effect and return value]]).
 
 #+findex: Interactive functions are commands
-You type a key on your keyboard and a character is written to the current buffer. That is a function bound to a key. It actually is an /interactive/ function, because you are calling it via a key binding rather than through some program. Interactive functions are known as "commands". Though do not let the implementation detail of interactivity distract you from the fact that every single action you perform in Emacs involves the evaluation of Emacs Lisp.
+キーボードでキーを押すと、現在のバッファに文字が書き込まれます。これがキーに結びつけられた機能です。実際には、これはインタラクティブな機能です。なぜなら、これはプログラムを通じてではなく、キーバインドを通じて呼び出されているからです。インタラクティブな機能は「コマンド」として知られています。インタラクティブな機能の実装の詳細に気を取られてはいけません。Emacsで行うすべての操作はEmacs Lispの評価を伴うという事実から目をそらさないでください。
 
 #+findex: execute-extended-command
-Another common pattern of interaction is with the {{{kbd(M-x)}}} (~execute-extended-command~) key, which by default runs the command ~execute-extended-command~: it produces a minibuffer prompt that asks you to select a command by its name and proceeds to execute it.
+もう一つのよくある対話のパターンは、{{{kbd(M-x)}}} (~execute-extended-command~) キーとの対話です。これはデフォルトではコマンド ~execute-extended-command~ を実行します。このコマンドはミニバッファプロンプトを表示し、コマンド名を入力して実行するよう促します。
 
 #+findex: eval-last-sexp
 #+findex: eval-buffer
 #+findex: eval-region
-Emacs can evaluate Elisp code from anywhere. If you have some Elisp in your buffer, you can place the cursor at the end of its closing parenthesis and type {{{kbd(C-x C-e)}}} (~eval-last-sexp~). Similarly, you can use the commands ~eval-buffer~ and ~eval-region~ to operate on the current buffer or highlighted region, respectively.
+EmacsはどこからでもElispコードを評価できます。バッファにElispが含まれている場合、閉じ括弧の後にカーソルを移動し、{{{kbd(C-x C-e)}}} (~eval-last-sexp~)と入力します。同様に、~eval-buffer~と~eval-region~コマンドを使用して、現在のバッファまたはハイライトされた領域をそれぞれ操作することもできます。
 
 #+vindex: buffer-file-name
-The ~eval-last-sexp~ also works on symbols ([[#h:symbols-balanced-expressions-and-quoting][Symbols, balanced expressions, and quoting]]). For example, if you place the cursor at the end of the variable ~buffer-file-name~ and use {{{kbd(C-x C-e)}}} (~eval-last-sexp~), you will get the value of that variable, which is either ~nil~ or the file system path to the file you are editing.
+~eval-last-sexp~ はシンボルに対しても動作します ([[#h:symbols-balanced-expressions-and-quoting][Symbols, balanced expressions, and quoting]])。例えば、変数 ~buffer-file-name~ の末尾にカーソルを置き、{{{kbd(C-x C-e)}}} (~eval-last-sexp~) を使用すると、その変数の値が表示されます。その値は、~nil~ または編集中のファイルのファイルシステムパスです。
 
 #+findex: eval-expression
 Sometimes the above are not appropriate for what you are trying to do. Suppose you intend to write a command that copies the file path of the current buffer. To do that, you need your code to test the value of the variable ~buffer-file-name~ ([[#h:buffers-as-data-structures][Buffers as data structures]]). But you do not want to type out ~buffer-file-name~ in your actual file, then use one of the aforementioned commands for Elisp evaluation, and then undo your edits. That is cumbersome and prone to mistakes! The best way to run Elisp in the current buffer is to type {{{kbd(M-:)}}} (~eval-expression~): it opens the minibuffer and expects you to write the code you want to evaluate. Type {{{kbd(RET)}}} from there to proceed. The evaluation is done with the last buffer as current (the buffer that was current prior to calling ~eval-expression~).
