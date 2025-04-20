@@ -70,13 +70,12 @@ EmacsはどこからでもElispコードを評価できます。バッファにE
 ~eval-last-sexp~ はシンボルに対しても動作します ([[#h:symbols-balanced-expressions-and-quoting][Symbols, balanced expressions, and quoting]])。例えば、変数 ~buffer-file-name~ の末尾にカーソルを置き、{{{kbd(C-x C-e)}}} (~eval-last-sexp~) を使用すると、その変数の値が表示されます。その値は、~nil~ または編集中のファイルのファイルシステムパスです。
 
 #+findex: eval-expression
-Sometimes the above are not appropriate for what you are trying to do. Suppose you intend to write a command that copies the file path of the current buffer. To do that, you need your code to test the value of the variable ~buffer-file-name~ ([[#h:buffers-as-data-structures][Buffers as data structures]]). But you do not want to type out ~buffer-file-name~ in your actual file, then use one of the aforementioned commands for Elisp evaluation, and then undo your edits. That is cumbersome and prone to mistakes! The best way to run Elisp in the current buffer is to type {{{kbd(M-:)}}} (~eval-expression~): it opens the minibuffer and expects you to write the code you want to evaluate. Type {{{kbd(RET)}}} from there to proceed. The evaluation is done with the last buffer as current (the buffer that was current prior to calling ~eval-expression~).
+場合によっては、上記の方法は目的の作業には適していません。例えば、現在のバッファのファイルパスをコピーするコマンドを書きたい場合を考えてみましょう。その場合、コードで変数 ~buffer-file-name~ （［［#h：buffers-as-data-structures］［バッファとしてのデータ構造］］） の値を確認する必要があります。しかし、実際のファイルに ~buffer-file-name~ と入力し、上記の Elisp 評価コマンドの1つを使用し、その後編集を元に戻すのは面倒で間違いやすいです！現在のバッファで Elisp を実行する最良の方法は、{{{kbd(M-:)}}} (~eval-expression~) と入力することです。これによりミニバッファが開き、評価したいコードを入力するよう求められます。そこから {{{kbd(RET)}}} を押すと実行されます。評価は、~eval-expression~ を呼び出す前の現在のバッファ（最後のバッファ）を現在のバッファとして行われます。
 
-Here is some Emacs Lisp you may want to try in (i) a buffer that corresponds to a file versus (ii) a buffer that is not associated with any file on disk.
+以下は、（i） ファイルに対応するバッファと （ii） ディスク上のどのファイルとも関連付けられていないバッファで試すことができる Emacs Lisp の例です。
 
 #+begin_src emacs-lisp
-;; Use `eval-expression' to evaluate this code in a file-visiting
-;; buffer versus a buffer that does not visit any file.
+;; `eval-expression` を使用して、ファイルを訪問しているバッファと、ファイルを訪問していないバッファでこのコードを評価します。
 (if buffer-file-name
     (message "The path to this file is `%s'" buffer-file-name)
   (message "Sorry mate, this buffer is not visiting a file"))
