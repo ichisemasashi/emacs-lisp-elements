@@ -86,34 +86,34 @@ EmacsはどこからでもElispコードを評価できます。バッファにE
 #+vindex: initial-major-mode
 #+findex: eval-print-last-sexp
 #+findex: eval-last-sexp
-When you are experimenting with code, you want to test how it behaves. Use the command ~ielm~ to open an interactive shell. It puts you at a prompt where you can type any Elisp and hit {{{kbd(RET)}}} to evaluate it. The return value is printed right below. Alternatively, switch to the =*scratch*= buffer. If it is using the major mode ~lisp-interaction-mode~, which is the default value of the variable ~initial-major-mode~, then you can move around freely in that buffer and type {{{kbd(C-j)}}} (~eval-print-last-sexp~) at the end of some code to evaluate it. This works almost the same way as ~eval-last-sexp~, with the added effect of putting the return value right below the expression you just evaluated.
+コードを実験する際は、その動作を確認したいものです。~ielm~ コマンドを使用してインタラクティブシェルを開きます。これにより、プロンプトが表示され、任意の Elisp を入力して{{{kbd(RET)}}} を押すことで評価できます。返り値は直下に表示されます。または、=*scratch*= バッファに切り替えます。このバッファが変数 ~initial-major-mode~ のデフォルト値である ~lisp-interaction-mode~ を使用している場合、そのバッファ内で自由に移動でき、コードの末尾で {{{kbd(C-j)}}} （~eval-print-last-sexp~） を押すことで評価できます。これは ~eval-last-sexp~ とほぼ同じ動作ですが、評価した式の下に返り値を直接表示する点が追加されています。
 
-#+cindex: Introspect Emacs Lisp
+#+cindex: Emacs Lisp の自己分析
 #+vindex: major-mode
 #+findex: describe-variable
 #+findex: describe-function
 #+findex: describe-keymap
 #+findex: describe-key
 #+findex: describe-symbol
-In addition to these, you can rely on the self-documenting nature of Emacs to figure out what the current state is. For example, to learn about the buffer-local value of the variable ~major-mode~, you can do {{{kbd(C-h v)}}} (~describe-variable~), and then search for that variable. The resulting Help buffer will inform you about the current value of ~major-mode~. This help command and many others like ~describe-function~, ~describe-keymap~, ~describe-key~, and ~describe-symbol~, provide insight into what Emacs knows about a given object. The Help buffer will show relevant information, such as the path to the file that defines the given function or whether a variable is declared as buffer-local.
+これらの他に、Emacsの自己説明機能を利用して現在の状態を確認できます。例えば、変数 ~major-mode~ のバッファローカル値を確認するには、{{{kbd(C-h v)}}} （~describe-variable~） を実行し、その変数で検索します。表示されるヘルプバッファには、~major-mode~ の現在の値が示されます。このヘルプコマンドと、~describe-function~、~describe-keymap~、~describe-key~、~describe-symbol~ などの類似のコマンドは、Emacs が特定のオブジェクトについて知っている情報を提供します。ヘルプバッファには、該当する関数を定義するファイルのパスや、変数がバッファローカルとして宣言されているかどうかなどの関連情報が表示されます。
 
-#+cindex: Emacs is self-documenting
-Emacs is "self-documenting" because it reports on its state. You do not need to explicitly update the Help buffers. This happens automatically by virtue of evaluating the relevant code: Emacs effectively shows you the latest value of whatever it is you are working with.
+#+cindex: Emacsは自己文書化されています。
+Emacsは「自己文書化」機能を備えています。これは、Emacsが自身の状態を報告するためです。ヘルプバッファを明示的に更新する必要はありません。これは、関連するコードを評価する際に自動的に行われます：Emacsは、現在作業中の対象の最新の値を効果的に表示します。
 
 * Side effect and return value
 :PROPERTIES:
 :CUSTOM_ID: h:side-effect-and-return-value
 :END:
 
-Emacs Lisp has functions. They take inputs and produce outputs. In its purest form, a function is a computation that only returns a value: it does not change anything in its environment. The return value of a function is used as input for another function, in what effectively is a chain of computations. You can thus rely on a function's return value to express something like "if this works, then also do this other thing, otherwise do something else or even nothing."
+Emacs Lispには関数があります。関数は入力を受け取り、出力を生成します。最も純粋な形では、関数は値を返すだけの計算です：環境内の何も変更しません。関数の返り値は、別の関数の入力として使用され、実質的に計算の連鎖を形成します。これにより、関数の返り値に依存して「これが成功すれば、この他のことも実行し、そうでなければ別のことを実行するか、何も実行しない」といったことを表現できます。
 
-Elisp is the language that extends and controls Emacs. This means that it also affects the state of the editor. When you run a function, it can make permanent changes, such as to insert some text at the point of the cursor, delete a buffer, create a new window, and so on. These changes will have an impact on future function calls. For example, if the previous function deleted a certain buffer, the next function which was supposed to write to that same buffer can no longer do its job: the buffer is gone!
+ElispはEmacsを拡張し制御する言語です。つまり、エディターの状態にも影響を及ぼします。関数を実行すると、カーソルの位置にテキストを挿入する、バッファを削除する、新しいウィンドウを作成するなどの永続的な変更を加えることができます。これらの変更は、今後の関数呼び出しに影響を及ぼします。例えば、前の関数が特定のバッファを削除した場合、そのバッファに書き込むはずだった次の関数はその役割を果たせなくなります：バッファが消えてしまったからです！
 
-When you write Elisp, you have to account for both the return value and the side effects. If you are sloppy, you will get unintended results caused by all those ill-considered changes to the environment. But if you use side effects meticulously, you are empowered to take Elisp to its full potential. For instance, imagine you define a function that follows the logic of "create a buffer, go there, write some text, save the buffer to a file at my preferred location, and then come back where I was before I called this function, while leaving the created buffer open." All these are side effects and they are all useful. Your function may have some meaningful return value as well that you can employ as the input of another function. For example, your function would return the buffer object it generated, so that the next function can do something there like display that buffer in a separate frame and make its text larger.
+Elispを書く際は、返り値と副作用の両方を考慮する必要があります。もし不注意だと、環境への不適切な変更によって予期しない結果が生じます。しかし、副作用を慎重に扱えば、Elispの真のポテンシャルを引き出すことができます。例えば、次のような関数を定義するとします：「バッファを作成し、そのバッファに移動し、テキストを書き込み、バッファを好みの場所にファイルに保存し、この関数を呼び出す前の位置に戻り、作成したバッファを開いたままにする」というロジックです。これらはすべて副作用であり、すべて役に立ちます。あなたの関数には、別の関数の入力として使用できる意味のある戻り値があるかもしれません。例えば、関数は生成したバッファオブジェクトを返すため、次の関数はそのバッファを別フレームに表示したり、テキストを拡大したりできます。
 
-The idea is to manipulate the state of the editor, to make Emacs do what you envision. Sometimes this means your code has side effects. At other times, side effects are useless or even run counter to your intended results. You will keep refining your intuition about what needs to be done as you gain more experience and expand the array of your skills ([[#h:symbols-balanced-expressions-and-quoting][Symbols, balanced expressions, and quoting]]). No problem; no stress!
+アイデアは、エディターの状態を操作し、Emacsにあなたが想像する動作をさせることです。時には、コードに副作用が含まれることになります。一方、副作用は不要だったり、意図した結果と矛盾する場合もあります。経験を重ね、スキルを拡張するにつれ、何が必要なのかについての直感を磨いていくことになります([[#h:symbols-balanced-expressions-and-quoting][Symbols, balanced expressions, and quoting]])。問題ありません！ストレス不要です！
 
-* Buffers as data structures
+* データ構造としてのバッファ
 :PROPERTIES:
 :CUSTOM_ID: h:buffers-as-data-structures
 :END:
@@ -123,14 +123,14 @@ The idea is to manipulate the state of the editor, to make Emacs do what you env
 #+findex: point-max
 #+findex: line-beginning-position
 #+findex: re-search-forward
-A buffer holds data as a sequence of characters. For example, this data is the text you are looking at when you open a file. Each character exists at a given position, which is a number. The function ~point~ gives you the position at the point you are on, which typically corresponds to where the cursor is ([[#h:evaluate-emacs-lisp][Evaluate Emacs Lisp]]). At the beginning of a buffer, ~point~ returns the value of =1= ([[#h:side-effect-and-return-value][Side effect and return value]]). There are plenty of functions that return a buffer position, such as ~point-min~, ~point-max~, ~line-beginning-position~, and ~re-search-forward~. Some of those will have side effects, like ~re-search-forward~ which moves the cursor to the given match.
+バッファは、文字のシーケンスとしてデータを保持します。例えば、ファイルを開いた際に表示されているテキストがこのデータです。各文字は、特定の位置（数値）に存在します。~point~関数は、現在位置の座標を返します。この位置は通常、カーソルの位置に対応します([[#h:evaluate-emacs-lisp][Evaluate Emacs Lisp]])。バッファの先頭では、~point~は=1=の値を返します([[#h:side-effect-and-return-value][Side effect and return value]])。バッファの位置を返す関数は数多く存在し、~point-min~、~point-max~、~line-beginning-position~、~re-search-forward~ などがあります。そのうちの一部は副作用を有し、例えば ~re-search-forward~ は指定された一致位置にカーソルを移動します。
 
-When you program in Emacs Lisp, you frequently rely on buffers to do some of the following:
+Emacs Lisp でプログラミングする際、バッファを次のような目的で頻繁に利用します：
 
 #+findex: buffer-string
 #+findex: buffer-substring
 #+findex: buffer-substring-no-properties
-- Extract file contents as a string :: Think of the buffer as a large string. You can get the entirety of its contents as one potentially massive string by using the function ~buffer-string~. You may also get a substring between two buffer positions, such as with the ~buffer-substring~ function or its ~buffer-substring-no-properties~ counterpart ([[#h:text-has-its-own-properties][Text has its own properties]]). Imagine you do this as part of a wider operation that (i) opens a file, (ii) goes to a certain position, (iii) copies the text it found, (iv) switches to another buffer, and (v) writes what it found to this new buffer.
+- ファイルの内容を文字列として抽出 ：： バッファを大きな文字列として考えます。~buffer-string~ 関数を使用すると、その内容全体を1つの巨大な文字列として取得できます。また、~buffer-substring~ 関数やそのプロパティを無視するバージョン ~buffer-substring-no-properties~ ([[#h:text-has-its-own-properties][Text has its own properties]]) を使用すると、バッファ内の2つの位置の間にある部分文字列を取得できます。この操作を、（i） ファイルを開く、（ii） 特定の位置に移動する、（iii） 見つけたテキストをコピーする、（iv） 別のバッファに切り替える、（v） 見つけた内容を新しいバッファに書き込む、という一連の操作の一部として行うことを想像してください。
 
 #+findex: get-buffer-create
 #+findex: get-buffer
@@ -139,51 +139,51 @@ When you program in Emacs Lisp, you frequently rely on buffers to do some of the
 #+findex: delete-region
 #+findex: display-buffer
 #+findex: pop-to-buffer
-- Present the results of some operation :: You may have a function that shows upcoming holidays. Your code does the computations behind the scenes and ultimately writes some text to a buffer. The end product is on display. Depending on how you go about it, you will want to evaluate the function ~get-buffer-create~ or its more strict ~get-buffer~ alternative. If you need to clear the contents of an existing buffer, you might use the ~with-current-buffer~ macro to temporarily switch to the buffer you are targetting and then either call the function ~erase-buffer~ to delete everything or limit the deletion to the range betweeen two buffer positions with ~delete-region~. Finally, the functions ~display-buffer~ or ~pop-to-buffer~ will place the buffer in an Emacs window.
+- ある操作の結果を表示する ：： 例えば、今後の祝日を表示する関数があるかもしれません。そのコードは背景で計算を行い、最終的にテキストをバッファに書き込みます。最終的な結果は画面に表示されます。実装方法によっては、~get-buffer-create~ 関数またはそのより厳格な ~get-buffer~ 代替関数を評価する必要があります。既存のバッファの内容をクリアする必要がある場合、~with-current-buffer~ マクロを使用してターゲットのバッファに一時的に切り替わり、関数 ~erase-buffer~ で全てを削除するか、~delete-region~ で2つのバッファ位置の間を削除します。最後に、関数 ~display-buffer~ または ~pop-to-buffer~ でバッファを Emacs ウィンドウに表示します。
 
 #+vindex: buffer-file-name
 #+vindex: fill-column
 #+vindex: default-directory
 #+vindex: buffer-list
 #+findex: setq-local
-- Associate variables with a given buffer :: In Emacs Lisp, variables can take a buffer-local value which differs from its global counterpart. Some variables are even declared to always be buffer-local, such as the ~buffer-file-name~, ~fill-column~, and ~default-directory~. Suppose you are doing something like returning a list of buffers that visit files in a given directory. You would iterate through the return value of the ~buffer-list~ function to filter the results accordingly by testing for a certain value of ~buffer-file-name~ ([[#h:basic-control-flow-with-if-cond-and-others][Basic control flow with ~if~, ~cond~, and others]]). This specific variable is always available, though you can always use the ~setq-local~ macro to assign a value to a variable in the current buffer.
+- 変数を指定されたバッファに関連付ける ：： Emacs Lispでは、変数はグローバルな値とは異なるバッファローカルな値を取ることができます。一部の変数は、~buffer-file-name~、~fill-column~、~default-directory~など、常にバッファローカルであるように宣言されています。例えば、指定されたディレクトリ内のファイルを訪問しているバッファのリストを返すような処理を行う場合、~buffer-list~関数の返り値を反復処理し、~buffer-file-name~の特定の値と一致するバッファをフィルタリングします([[#h:basic-control-flow-with-if-cond-and-others][Basic control flow with ~if~, ~cond~, and others]])。この特定の変数は常に利用可能です。ただし、現在のバッファ内で変数に値を割り当てるには、~setq-local~ マクロを使用できます。
 
 #+findex: seq-filter
 #+findex: buffer-list
-#+cindex: Hidden buffers
-The latter point is perhaps the most open-ended one. Buffers are like a bundle of variables, which includes their contents, the major mode they are running, and all the buffer-local values they have. In the following code block, I am using the ~seq-filter~ function to iterate through the return value of the function ~buffer-list~ ([[#h:symbols-balanced-expressions-and-quoting][Symbols, balanced expressions, and quoting]]).
+#+cindex: 隠しバッファ
+後者の点は、おそらく最も曖昧な点です。バッファは、その内容、実行中のメジャーモード、および持つすべてのバッファ固有の値を含む変数の束のようなものです。以下のコードブロックでは、~buffer-list~関数の返り値を反復処理するために~seq-filter~関数を使用しています([[#h:symbols-balanced-expressions-and-quoting][Symbols, balanced expressions, and quoting]]).
 
 #+begin_src emacs-lisp
 (seq-filter
  (lambda (buffer)
-   "Return BUFFER if it is visible and its major mode derives from `text-mode'."
+   "BUFFER が有効で、そのメジャーモードが `text-mode` から派生している場合、BUFFER を返す。"
    (with-current-buffer buffer
-     ;; The convention for buffers which are not meant to be seen by
-     ;; the user is to start their name with an empty space.  We are
-     ;; not interested in those right now.
+     ;; ユーザーが閲覧しないことを意図したバッファの命名規則では、
+     ;; 名前を空白文字で始めることが推奨されています。
+     ;; 現在、それらについては考慮していません。
      (and (not (string-prefix-p " " (buffer-name buffer)))
           (derived-mode-p 'text-mode))))
  (buffer-list))
 #+end_src
 
-This will return a list of buffer objects that pass the test of (i) being "visible" to the user and (ii) their major mode is either ~text-mode~ or derived therefrom. The above may also be written thus ([[#h:when-to-use-a-named-function-or-a-lambda-function][When to use a named function or a lambda function]]):
+これは、（i） ユーザーから「表示可能」であること、および （ii） そのメジャーモードが ~text-mode~ またはその派生モードであるという条件を満たすバッファオブジェクトのリストを返します。上記は次のように書くこともできます ([[#h:when-to-use-a-named-function-or-a-lambda-function][When to use a named function or a lambda function]])：
 
 #+begin_src emacs-lisp
 (defun my-buffer-visble-and-text-p (buffer)
-  "Return BUFFER if it is visible and its major mode derives from `text-mode'."
+  "BUFFER が有効で、その主要モードが `text-mode` から派生している場合、BUFFER を返す。"
   (with-current-buffer buffer
-    ;; The convention for buffers which are not meant to be seen by
-    ;; the user is to start their name with an empty space.  We are
-    ;; not interested in those right now.
+    ;; ユーザーが閲覧しないことを意図したバッファの命名規則では、
+    ;; 名前を空白文字で始めることが推奨されています。 
+    ;; 現在、それらについては考慮していません。
     (and (not (string-prefix-p " " (buffer-name buffer)))
          (derived-mode-p 'text-mode))))
 
 (seq-filter #'my-buffer-visble-and-text-p (buffer-list))
 #+end_src
 
-As with buffers, Emacs windows and frames have their own parameters. I will not cover those as their utility is more specialised and the concepts are the same. Just know that they are data structures that you may use to your advantage, including by iterating through them ([[#h:mapping-through-a-list-of-elements][Mapping through a list of elements]]).
+バッファと同様に、Emacsのウィンドウとフレームには独自のパラメーターがあります。これらの詳細は説明しません。なぜなら、その用途はより専門的で、概念は同じだからです。ただ、これらはデータ構造であり、利点として活用できることを覚えておいてください。例えば、それらを反復処理することで利用できます([[#h:mapping-through-a-list-of-elements][Mapping through a list of elements]]).
 
-* Text has its own properties
+* テキストには独自のプロパティがあります
 :PROPERTIES:
 :CUSTOM_ID: h:text-has-its-own-properties
 :END:
